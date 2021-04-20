@@ -29,7 +29,7 @@ print('Is human:', not utils.is_contract(account))
 block = c.get_block()
 best_block_number = int(block['number'])
 stop_block_number = best_block_number + int(HOW_MANY_BLOCKS_LATER)
-response = c.deploy(w, smart_contract, ['uint', 'bool'], [stop_block_number, True])
+response = c.deploy(w, smart_contract, ['uint', 'bool', 'uint'], [stop_block_number, True, 1 * (10**18)])
 tx_id = response['id']
 print('deploy_tx:', tx_id)
 

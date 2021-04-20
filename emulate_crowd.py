@@ -73,7 +73,13 @@ response = c.call(w.getAddress(), smart_contract, 'balanceOf', [w.getAddress()],
 print('User balance in contract:', int(response['decoded']['0']) / (10**18), 'VET')
 
 response = c.call(w.getAddress(), smart_contract, 'countUsers', [], CONTRACT_ADDRESS)
-print('User counts in contract:', int(response['decoded']['0']))
+user_counter = int(response['decoded']['0'])
+print('User counts in contract:', user_counter)
+if user_counter > 0:
+    for each in range(0, user_counter):
+        response = c.call(w.getAddress(), smart_contract, 'users', [each], CONTRACT_ADDRESS)
+        print('user:', each, 'address:', response['decoded']['0'])
+
 
 # Withdraw all the VET back to (owner)
 response = c.call(w.getAddress(), smart_contract, 'total', [], CONTRACT_ADDRESS)
