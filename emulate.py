@@ -33,9 +33,20 @@ print('Is human:', not utils.is_contract(account))
 if not utils.is_contract(c.get_account(CONTRACT_ADDRESS)):
     raise Exception(f"{CONTRACT_ADDRESS} is not a smart contract")
 
-for i in range(20):
+# best block
+block = c.get_block()
+best_block_number = int(block['number'])
+for i in range(5):
+    response = c.call(w.getAddress(), smart_contract, '_getRandomNumber', [TOP, best_block_number - i], CONTRACT_ADDRESS)
+    if response['reverted']:
+        print(response)
+    else:
+        print(response['decoded']['0'])  
+
+# Track the future blocks
+for i in range(5):
     time.sleep(SLEEP)
-    response = c.call(w.getAddress(), smart_contract, '_getRandomNumber', [TOP], CONTRACT_ADDRESS)
+    response = c.call(w.getAddress(), smart_contract, 'quickRandomNumber', [TOP], CONTRACT_ADDRESS)
     if response['reverted']:
         print(response)
     else:
