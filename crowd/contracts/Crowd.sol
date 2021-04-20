@@ -24,11 +24,13 @@ contract Crowd {
     address public owner; // Owner of the smart contract
     uint public stopBlockNumber; // After which the crowd sale stops
     bool public allowDuplicate; // Allow user to deposit multiple times and counts as multiple.
+    uint public minValue; // minimum value (VET in Wei) that required to do donation.
 
-    constructor(uint _blockNumber, bool _allowDuplicate) public {
+    constructor(uint _blockNumber, bool _allowDuplicate, uint _minValue) public {
         owner = msg.sender;
         stopBlockNumber = _blockNumber;
         allowDuplicate = _allowDuplicate;
+        minValue = _minValue;
     }
 
     // User: deposit VET into this contract
@@ -39,6 +41,7 @@ contract Crowd {
     // User: deposit VET into this contract
     function deposit() public payable {
         require(block.number < stopBlockNumber, "too late to participate");
+        require(msg.value > minValue, "pay more please");
         if (allowDuplicate == false) {
             if (balanceOf[msg.sender] > 0) {
                 revert("Don't allow multiple deposits, and you have already deposited");
