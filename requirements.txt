@@ -1,0 +1,2 @@
+eth-brownie
+thor-requests>=0.1.2
