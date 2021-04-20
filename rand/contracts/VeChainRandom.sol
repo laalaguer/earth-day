@@ -20,18 +20,20 @@ contract VeChainRandom {
 
     Extension en;
 
-    function _getRandomNumber(uint top) public returns (uint) { // get a number from [1, top]
+    // Get a random number
+    // from a give block number
+    function _getRandomNumber(uint top, uint _blockNumber) public returns (uint) { // get a number from [1, top]
         require(top > 1, "top > 1 required");
 
         address extension_native = 0x0000000000000000000000457874656E73696F6e;
         en = Extension(extension_native);
 
-        uint counter = 5; // How many previous blocks to take in account?
+        uint counter = 5; // How many previous blocks to take into consideration?
         uint256 s;
         for (uint i = 1; i < counter; i++) {
-            uint256 s1 = uint256(en.blockSigner( (block.number - i) ));
+            uint256 s1 = uint256(en.blockSigner( (_blockNumber - i) ));
             s = s ^ (s1);
-            uint256 s2 = uint256(en.blockID( (block.number - i) ));
+            uint256 s2 = uint256(en.blockID( (_blockNumber - i) ));
             s = s ^ (s2);
         }
 
@@ -39,5 +41,12 @@ contract VeChainRandom {
         emit RandomNumber(result);
         
         return result;
+    }
+
+    // Quickly get a random number
+    // based on current block
+    function quickRandomNumber(uint top) public returns (uint) {
+        uint _blockNumber = block.number;
+        return _getRandomNumber(top, _blockNumber);
     }
 }
