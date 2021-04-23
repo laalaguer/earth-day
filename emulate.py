@@ -7,7 +7,7 @@ from thor_requests.contract import Contract
 from thor_requests import utils
 
 # Global params
-TOP = 20000
+TOP = 220
 SLEEP = 11
 
 # Read in Params
@@ -34,20 +34,31 @@ if not utils.is_contract(c.get_account(CONTRACT_ADDRESS)):
     raise Exception(f"{CONTRACT_ADDRESS} is not a smart contract")
 
 # best block
-block = c.get_block()
-best_block_number = int(block['number'])
-for i in range(5):
-    response = c.call(w.getAddress(), smart_contract, '_getRandomNumber', [TOP, best_block_number - i], CONTRACT_ADDRESS)
+# block = c.get_block()
+# best_block_number = int(block['number'])
+winners = set()
+best_block_number = 8859801
+for i in range(200):
+    response = c.call(w.getAddress(), smart_contract, '_getRandomNumber', [TOP, best_block_number + i], CONTRACT_ADDRESS)
     if response['reverted']:
         print(response)
     else:
-        print(response['decoded']['0'])  
+        winner = int(response['decoded']['0'])
+        if winner in winners:
+            print(f"{winner} already in the pool!")
+        else:
+            winners.add(winner)
+            if len(winners) >= 50:
+                break
 
-# Track the future blocks
-for i in range(5):
-    time.sleep(SLEEP)
-    response = c.call(w.getAddress(), smart_contract, 'quickRandomNumber', [TOP], CONTRACT_ADDRESS)
-    if response['reverted']:
-        print(response)
-    else:
-        print(response['decoded']['0'])
+for each in winners:
+    print(each)
+
+# # Track the future blocks
+# for i in range(5):
+#     time.sleep(SLEEP)
+#     response = c.call(w.getAddress(), smart_contract, 'quickRandomNumber', [TOP], CONTRACT_ADDRESS)
+#     if response['reverted']:
+#         print(response)
+#     else:
+#         print(response['decoded']['0'])
